@@ -84,6 +84,16 @@ function Tmux:new_session(session)
 	return is_created
 end
 
+function Tmux:get_current_session()
+	local session = Session.get_current()
+	if session == nil then
+		Logger:warn("No session found")
+		return false
+	end
+	Logger:info(string.format("Found session: %s", vim.inspect(session)))
+	return true
+end
+
 ---@param opt {name: string, session: string?, start_directory: string?, command: string?}
 ---@param result boolean Whehter the Window was created.
 function Tmux:new_window(opt)

@@ -24,23 +24,26 @@ end
 
 ---@return session Session? Get the current session, the one attached.
 function Session.get_current()
-	local current_filter = "#{==:#{?session_attached,1,0},1}"
+	local current_filter = "'#{==:#{?session_attached,1,0},1}'"
 	local command = Command:builder():add("tmux"):add("list-sessions")
 
 	-- Output return format
 	command:add("-F"):add(Constants.SESSION_FORMAT)
 
 	-- Filtering to current using attached attribute
-	command:add("-f "):add(current_filter)
+	command:add("-f"):add(current_filter)
 
 	local result = vim.system(command:build(), { text = true }, function(res)
-		if res.code ~= 0 then
-			return nil
-		else
-			local session = Session.parse_session_from_string(res.output)
-			return session
-		end
-	end)
+		vim.schedule(function()
+			if res.code ~= 0 then
+				return nil
+			else
+				local session = Session.parse_session_from_string(res.stdout)
+				Logger:debug(string.format("Session %s", vim.inspect(session)))
+				return session
+			end
+		end)
+	end):wait()
 
 	return result
 end
@@ -48,6 +51,8 @@ end
 ---@param session string Follows the format returned by `Constants.SESSION_FORMAT`
 ---@return Session
 function Session.parse_session_from_string(session)
+	session = string.gsub(session, "'", "")
+	session = string.gsub(session, "\n", "")
 	local s = {}
 	local session_as_lst = vim.split(session, ",")
 	local session_format = Constants.generate_session_format_list() -- [ attached, id, name ]

@@ -22,24 +22,39 @@ function Session:new(opts)
 	return session
 end
 
+---@return session Session? Get the current session, the one attached.
 function Session.get_current()
 	local current_filter = "#{==:#{?session_attached,1,0},1}"
-	local command =
-		Command:builder():add("tmux list-sessions"):add("-F " .. Constants.SESSION_FORMAT):add("-f " .. current_filter)
+	local command = Command:builder():add("tmux"):add("list-sessions")
 
-	local session_str = nil
-	vim.system(command:build(), { text = true }, function(res) end)
+	-- Output return format
+	command:add("-F"):add(Constants.SESSION_FORMAT)
+
+	-- Filtering to current using attached attribute
+	command:add("-f "):add(current_filter)
+
+	local result = vim.system(command:build(), { text = true }, function(res)
+		if res.code ~= 0 then
+			return nil
+		else
+			local session = Session.parse_session_from_string(res.output)
+			return session
+		end
+	end)
+
+	return result
 end
 
----@param session string
+---@param session string Follows the format returned by `Constants.SESSION_FORMAT`
 ---@return Session
 function Session.parse_session_from_string(session)
-	local s = Session:new({})
-	local session_format = Constants.generate_session_format_list()
-	for _, param in pairs(session_format) do
-		s[param] = session[param]
+	local s = {}
+	local session_as_lst = vim.split(session, ",")
+	local session_format = Constants.generate_session_format_list() -- [ attached, id, name ]
+	for idx, param in pairs(session_format) do
+		s[param] = session_as_lst[idx]
 	end
-	return s
+	return Session:new(s)
 end
 
 ---@param session {name: string, client: string?, start_directory: string?, environment: string?, window-name: string?}
@@ -85,9 +100,6 @@ function Session:create(session)
 	return result
 end
 
----@param window_name string Name of the window to create in the session
-function Session:create_window(window_name) end
-
 ---@return result boolean Whether session exists or not
 function Session:exists()
 	local identifier = self.id
@@ -95,7 +107,7 @@ function Session:exists()
 		identifier = self.name
 	end
 
-	local command = Command:builder():add("tmux has-session"):add("-t " .. identifier)
+	local command = Command:builder():add("tmux"):add("has-session"):add("-t"):add(identifier)
 	local result = vim.system(command:build(), { text = true }, function(res)
 		if res.status ~= 0 then
 			return false
@@ -107,7 +119,7 @@ function Session:exists()
 	return result
 end
 
----@param session Session the Session to swith to
+---@param session Session the Session to switch to
 ---@return nil
 function Session:switch(session)
 	-- Return if switching to the same session

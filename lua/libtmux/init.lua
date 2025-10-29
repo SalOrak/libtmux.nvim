@@ -105,6 +105,11 @@ function Tmux:new_window(opt)
 		command:add("-c"):add(opt.start_directory)
 	end
 
+	-- Command to execute must be the last argument.
+	if opt.command and vim.trim(opt.command) ~= "" then
+		command:add(opt.command)
+	end
+
 	local result = vim.system(command:build(), { text = true }, function(obj)
 		vim.schedule(function()
 			if obj.code ~= 0 then
@@ -142,6 +147,120 @@ function Tmux:select_window(name)
 				return false
 			else
 				Logger:info(string.format("Selected window %s", name))
+				return true
+			end
+		end)
+	end)
+
+	return result
+end
+
+---@param name string Window to kill
+---@return result boolean Whether the window was killed or not
+function Tmux:kill_window(name)
+	if not name or vim.trim(name) == "" then
+		Logger:error("Window name must be valid")
+		Logger:debug(string.format("Window name: %s", name))
+		return false
+	end
+
+	local command = self.command:builder():add("tmux"):add("kill-window")
+
+	command:add("-t"):add(name)
+
+	local result = vim.system(command:build(), { text = true }, function(obj)
+		vim.schedule(function()
+			if obj.code ~= 0 then
+				Logger:error(string.format("While killing window %s", name))
+				Logger:debug(string.format("Command: %s", vim.inspect(command:build())))
+				return false
+			else
+				Logger:info(string.format("Killed window %s", name))
+				return true
+			end
+		end)
+	end)
+
+	return result
+end
+
+---@param opt {window_name: string?, keys: [string]}
+function Tmux:send_keys(opt)
+	if not opt.window_name or vim.trim(opt.window_name) == "" then
+		Logger:error("Window name must be valid")
+		Logger:debug(string.format("Window name: %s", opt.window_name))
+		return false
+	end
+
+	local command = self.command:builder():add("tmux"):add("send-keys")
+
+	command:add("-t"):add(opt.window_name)
+
+	-- Append the keys to the end
+	for _, key in pairs(opt.keys) do
+		command:add(key)
+	end
+
+	local result = vim.system(command:build(), { text = true }, function(obj)
+		vim.schedule(function()
+			if obj.code ~= 0 then
+				Logger:error(string.format("While sending keys to window %s", opt.window_name))
+				Logger:debug(string.format("Command: %s", vim.inspect(command:build())))
+				Logger:debug(string.format("Result: %s", vim.inspect(obj)))
+				return false
+			else
+				Logger:info(string.format("Sent keys to window %s", name))
+				return true
+			end
+		end)
+	end)
+
+	return result
+end
+
+---@alias Tmux:run_shell(opt)
+---@param opt {window_name: string, shell_command: string, start_directory: string?, background: boolean?, view_mode: boolean? }
+---@return result boolean Whether it ran the command.
+function Tmux:run_command(opt)
+	local result = self:run_shell(opt)
+	return result
+end
+
+---@param opt {window_name: string, shell_command: string, start_directory: string?, background: boolean?}
+---@return result boolean Whether it ran the command.
+function Tmux:run_shell(opt)
+	if not opt.window_name or vim.trim(opt.window_name) == "" then
+		Logger:error("Window name must be valid")
+		Logger:debug(string.format("Window name: %s", opt.window_name))
+		return false
+	end
+
+	local command = self.command:builder():add("tmux"):add("run-shell")
+
+	if not opt.start_directory or vim.trim(opt.start_directory) then
+		command:add("-c")
+		command:add(opt.start_directory)
+	end
+
+	if opt.background ~= nil and not opt.background then
+		command:add("-b")
+	end
+
+	command:add("-t"):add(opt.window_name)
+
+	-- Append the command to the end
+	command:add(opt.shell_command)
+
+	local result = vim.system(command:build(), { text = true }, function(obj)
+		vim.schedule(function()
+			if obj.code ~= 0 then
+				Logger:error(string.format("While running shell to window %s", opt.window_name))
+				Logger:debug(string.format("Command: %s", vim.inspect(command:build())))
+				Logger:debug(string.format("Result: %s", vim.inspect(obj)))
+				return false
+			else
+				Logger:debug(string.format("Command: %s", vim.inspect(command:build())))
+				Logger:info(string.format("Ran command to window %s", opt.window_name))
 				return true
 			end
 		end)

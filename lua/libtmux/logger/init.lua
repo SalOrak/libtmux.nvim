@@ -34,6 +34,8 @@ local logger = Logger:new({})
 ---@param msg string
 function Logger:log(log_level, msg)
 	if self.verbosity <= log_level then
+		-- Arrays in Lua start in 1, so add 1 to the log_level.
+		-- We could increase all values by one but they won't match `vim.log.levels`
 		vim.notify(string.format("[%s]: %s", Logger.VerbosityString[log_level + 1], msg), self.verbosity)
 	end
 end

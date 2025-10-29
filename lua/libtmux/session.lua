@@ -43,14 +43,14 @@ function Session.parse_session_from_string(session)
 end
 
 ---@param session {name: string, client: string?, start_directory: string?, environment: string?, window-name: string?}
----@return nil
+---@return result boolean Whether a new session was created.
 function Session:create(session)
 	local s = Session:new(session)
 
 	local command = Command:builder():add("tmux"):add("new-session"):add("-d")
 
 	if s.name == nil or vim.trim(s.name) == "" then
-		vim.notify("[ERROR] Session must have a not empty `name`.")
+		Logger:error("Session must have a not empty `name`.")
 		return
 	end
 
@@ -64,7 +64,7 @@ function Session:create(session)
 
 	command:add("-s"):add(s.name)
 
-	vim.system(command:build(), { text = true }, function(res)
+	local result = vim.system(command:build(), { text = true }, function(res)
 		vim.schedule(function()
 			if res.code ~= 0 then
 				Logger:error(
@@ -74,11 +74,15 @@ function Session:create(session)
 						string.gsub(res.stderr, "\n", " ")
 					)
 				)
+				return false
 			else
 				Logger:info(string.format("Created new session %s", s.name))
+				return true
 			end
 		end)
 	end):wait()
+
+	return result
 end
 
 ---@param window_name string Name of the window to create in the session

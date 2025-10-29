@@ -2,6 +2,7 @@
 local Command = require("libtmux.command")
 local Constants = require("libtmux.constants")
 local Session = require("libtmux.session")
+local Logger = require("libtmux.logger")
 
 ---@class Tmux
 ---@field command table
@@ -77,8 +78,76 @@ function Tmux:rename_session(target)
 end
 
 ---@param session {name: string, client: string?, start-directory: string?, environment: string?, window-name: string?}
+---@return is_created boolean Whether the session has created.
 function Tmux:new_session(session)
-	local s = Session:create(session)
+	local is_created = Session:create(session)
+	return is_created
+end
+
+---@param opt {name: string, session: string?, start_directory: string?, command: string?}
+---@param result boolean Whehter the Window was created.
+function Tmux:new_window(opt)
+	-- Window name is required
+	if not opt.name or vim.trim(opt.name) then
+		Logger:warn("Window name is required.")
+		return false
+	end
+
+	local s = opt.session
+	if not opt.session or vim.trim(opt.session) == "" then
+		s = "" -- TODO: Get current session but can we skip it?
+	end
+
+	local command = self.command:builder():add("tmux"):add("new-window")
+	command:add("-n"):add(opt.name)
+
+	if opt.start_directory and vim.trim(opt.start_directory) ~= "" then
+		command:add("-c"):add(opt.start_directory)
+	end
+
+	local result = vim.system(command:build(), { text = true }, function(obj)
+		vim.schedule(function()
+			if obj.code ~= 0 then
+				Logger:error(string.format("While creating window with name %s", opt.name))
+				Logger:debug(string.format("Creating window command: %s", vim.inspect(command:build())))
+				return false
+			else
+				Logger:info(string.format("Created new window with name %s", opt.name))
+				return true
+			end
+		end)
+	end)
+
+	return result
+end
+
+---@param name string Window to select
+---@return result boolean Whether the window was selected or not
+function Tmux:select_window(name)
+	if not name or vim.trim(name) == "" then
+		Logger:error("Window name must be valid")
+		Logger:debug(string.format("Window name: %s", name))
+		return false
+	end
+
+	local command = self.command:builder():add("tmux"):add("select-window")
+
+	command:add("-t"):add(name)
+
+	local result = vim.system(command:build(), { text = true }, function(obj)
+		vim.schedule(function()
+			if obj.code ~= 0 then
+				Logger:error(string.format("While selecting window %s", name))
+				Logger:debug(string.format("Command: %s", vim.inspect(command:build())))
+				return false
+			else
+				Logger:info(string.format("Selected window %s", name))
+				return true
+			end
+		end)
+	end)
+
+	return result
 end
 
 function Tmux:switch_to_all_sessions()

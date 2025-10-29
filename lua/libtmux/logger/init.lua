@@ -19,7 +19,7 @@ Logger.VerbosityString = {
 	"NONE",
 }
 
-Logger.verbosity = Logger.VerbosityLevel.ERROR
+Logger.verbosity = Logger.VerbosityLevel.TRACE
 
 ---@param opts {verbosity: VerbosityLevel?} @return Logger
 function Logger:new(opts)
@@ -33,7 +33,6 @@ local logger = Logger:new({})
 ---@param log_level Logger.VerbosityLevel
 ---@param msg string
 function Logger:log(log_level, msg)
-	print(string.format("Log level: %d -> %s", log_level, Logger.VerbosityString[log_level]))
 	if self.verbosity <= log_level then
 		vim.notify(string.format("[%s]: %s", Logger.VerbosityString[log_level + 1], msg), self.verbosity)
 	end
@@ -42,6 +41,11 @@ end
 ---@param msg string
 function Logger:error(msg)
 	self:log(Logger.VerbosityLevel.ERROR, msg)
+end
+
+---@param msg string
+function Logger:trace(msg)
+	self:log(Logger.VerbosityLevel.TRACE, msg)
 end
 
 ---@param msg string

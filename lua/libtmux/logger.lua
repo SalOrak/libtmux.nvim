@@ -65,4 +65,8 @@ function Logger:info(msg)
 	self:log(Logger.VerbosityLevel.INFO, msg)
 end
 
+function Logger:TODO(msg)
+	self.log(Logger.VerbosityLevel.ERROR, msg)
+end
+
 return logger

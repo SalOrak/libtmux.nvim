@@ -6,31 +6,58 @@ local Utils = require("libtmux.utils")
 local Window = {}
 Window.__index = Window
 
----@param opts {name: string, session: string?, start_directory: string?, command: string?}
+---@param opts {name: string?, target: string?, start_directory: string?, shell_command: string?, insert_after: boolean?, insert_before: boolean?, keep_focus: boolean?, kill_instead: boolean?, and_select: boolean?, env: string?, format: Format?}
 ---@param result boolean Whehter the Window was created.
 function Window.new(opts)
-	-- Window name is required
-	--
-	if not Utils.is_arg_present(opts.name) then
-		Logger:warn("Window name is required.")
-		return false
-	end
-
-	local s = opts.session
-	if not Utils.is_arg_present(opts.session) then
-		s = "" -- TODO: Get current session but can we skip it?
-	end
-
 	local command = Command:builder():add("tmux"):add("new-window")
 	command:add("-n"):add(opts.name)
 
-	if Utils.is_arg_present(opts) then
+	if Utils.is_arg_present(opts.insert_after) then
+		command:add("-a")
+	end
+
+	if Utils.is_arg_present(opts.insert_before) then
+		command:add("-b")
+	end
+
+	if Utils.is_arg_present(opts.keep_focus) then
+		command:add("-d")
+	end
+
+	if Utils.is_arg_present(opts.kill_instead) then
+		command:add("-k")
+	end
+
+	if Utils.is_arg_present(opts.and_select) then
+		command:add("-S")
+	end
+
+	if Utils.is_arg_present(opts.env) then
+		command:add("-e")
+		command:add(opts.env)
+	end
+
+	if Utils.is_arg_present(opts.format) then
+		Logger:TODO("Not implemented yet")
+	end
+
+	if Utils.is_arg_present(opts.start_directory) then
 		command:add("-c"):add(opts.start_directory)
 	end
 
+	if Utils.is_arg_present(opts.target) then
+		command:add("-t")
+		command:add(opts.target)
+	end
+
+	if Utils.is_arg_present(opts.name) then
+		command:add("-n")
+		command:add(opts.name)
+	end
+
 	-- Command to execute must be the last argument.
-	if Utils.is_arg_present(opts.command) then
-		command:add(opts.command)
+	if Utils.is_arg_present(opts.shell_command) then
+		command:add(opts.shell_command)
 	end
 
 	local result = vim.system(command:build(), { text = true }, function(obj)

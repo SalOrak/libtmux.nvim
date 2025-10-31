@@ -66,27 +66,52 @@ function Session.rename(opts)
 	return result
 end
 
----@param session {name: string, client: string?, start_directory: string?, environment: string?, window-name: string?}
+---@param opts {name: string, client: string?, start_directory: string?, environment: string?, window_name: string?, width: number?, height: number?, group: string?, shell_command: string?, default_size: boolean?, attach: boolean?}
 ---@return result boolean Whether a new session was created.
-function Session.create(session)
-	local s = Session:new(session)
+function Session.create(opts)
 
 	local command = Command:builder():add("tmux"):add("new-session"):add("-d")
 
-	if not Utils.is_arg_present(s.name) then
-		Logger:error("Session must have a not empty `name`.")
-		return
+	if Utils.is_arg_present(opts.attach) then
+		command:add("-A")
 	end
 
-	if Utils.is_arg_present(s.start_directory) then
-		command:add("-c"):add(s.start_directory)
+	if Utils.is_arg_present(opts.default_size) then
+		command:add("-d")
 	end
 
-	if Utils.is_arg_present(s.group_name) then
-		command:add("-t"):add(s.group_name)
+	if Utils.is_arg_present(opts.start_directory) then
+		command:add("-c")
+        command:add(opts.start_directory)
 	end
 
-	command:add("-s"):add(s.name)
+	if Utils.is_arg_present(opts.window_name) then
+		command:add("-n")
+        command::add(opts.window_name)
+	end
+
+	if Utils.is_arg_present(opts.name) then
+		command:add("-s")
+        command::add(opts.name)
+	end
+
+	if Utils.is_arg_present(opts.group_name) then
+		command:add("-t"):add(opts.group_name)
+	end
+
+	if Utils.is_arg_present(opts.width) then
+		command:add("-x")
+        command::add(opts.width)
+	end
+
+	if Utils.is_arg_present(opts.height) then
+		command:add("-y")
+        command::add(opts.height)
+	end
+
+	if Utils.is_arg_present(opts.shell_command) then
+        command::add(opts.shell_command)
+	end
 
 	local result = vim.system(command:build(), { text = true }, function(res)
 		vim.schedule(function()
@@ -190,13 +215,13 @@ end
 ---@param name string Session name to check if it exists
 ---@return result boolean Whether session exists or not
 function Session.exists(name)
-	if not Utils.is_arg_present(name) then
-		return false
-	end
 
 	local command = Command:builder():add("tmux"):add("has-session")
 
-	command:add("-t"):add(name)
+	if Utils.is_arg_present(name) then
+        command:add("-t")
+        command:add(name)
+	end
 
 	local result = vim.system(command:build(), { text = true }, function(res)
 		if res.code ~= 0 then
@@ -246,7 +271,7 @@ function Session.attach(opts)
 	return result
 end
 
----@param opts {name: string, client: string?}the Session to switch to
+---@param opts {name: string, client: string?, keep_zoomed: boolean?, read_only: boolean?}
 ---@return result boolean Whether switched to the session
 function Session.switch(opts)
 	if not Utils.is_arg_present(opts.name) then
@@ -256,8 +281,17 @@ function Session.switch(opts)
 
 	local command = Command:builder():add("tmux"):add("switch-client")
 
+	if Utils.is_arg_present(opts.keep_zoomed) then
+		command:add("-Z")
+	end
+
+	if Utils.is_arg_present(opts.read_only) then
+		command:add("-r")
+	end
+
 	if Utils.is_arg_present(opts.client) then
-		command:add("-c"):add(opts.client)
+		command:add("-c")
+		command:add(opts.client)
 	end
 
 	command:add("-t " .. opts.name)

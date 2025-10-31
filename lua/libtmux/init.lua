@@ -24,7 +24,7 @@ singleton = Tmux:init()
 ------------ SESSION ---------------------
 ------------------------------------------
 
----@param opts {name: string, client: string?}
+---@param opts {name: string, client: string?, keep_zoomed: boolean?, read_only: boolean?}
 ---@param boolean Whether the session was switched to or not
 function Tmux:switch_client(opts)
 	local result = Session.switch(opts)
@@ -38,10 +38,10 @@ function Tmux:rename_session(opts)
 	return res
 end
 
----@param session {name: string, client: string?, start-directory: string?, environment: string?, window-name: string?}
----@return is_created boolean Whether the session has created.
-function Tmux:new_session(session)
-	local is_created = Session.create(session)
+---@param opts {name: string, client: string?, start_directory: string?, environment: string?, window_name: string?, width: number?, height: number?, group: string?, shell_command: string?, default_size: boolean?, attach: boolean?}
+---@return result boolean Whether a new session was created.
+function Tmux:new_session(opts)
+	local is_created = Session.create(opts)
 	return is_created
 end
 
@@ -74,7 +74,7 @@ end
 ------------ WINDOW ----------------------
 ------------------------------------------
 
----@param opts {name: string, session: string?, start_directory: string?, command: string?}
+---@param opts {name: string?, target: string?, start_directory: string?, shell_command: string?, insert_after: boolean?, insert_before: boolean?, keep_focus: boolean?, kill_instead: boolean?, and_select: boolean?, env: string?, format: Format?}
 ---@param result boolean Whehter the Window was created.
 function Tmux:new_window(opts)
 	local result = Window.new(opts)

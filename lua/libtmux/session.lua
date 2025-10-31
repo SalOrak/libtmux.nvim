@@ -69,7 +69,6 @@ end
 ---@param opts {name: string, client: string?, start_directory: string?, environment: string?, window_name: string?, width: number?, height: number?, group: string?, shell_command: string?, default_size: boolean?, attach: boolean?}
 ---@return result boolean Whether a new session was created.
 function Session.create(opts)
-
 	local command = Command:builder():add("tmux"):add("new-session"):add("-d")
 
 	if Utils.is_arg_present(opts.attach) then
@@ -82,17 +81,17 @@ function Session.create(opts)
 
 	if Utils.is_arg_present(opts.start_directory) then
 		command:add("-c")
-        command:add(opts.start_directory)
+		command:add(opts.start_directory)
 	end
 
 	if Utils.is_arg_present(opts.window_name) then
 		command:add("-n")
-        command::add(opts.window_name)
+		command:add(opts.window_name)
 	end
 
 	if Utils.is_arg_present(opts.name) then
 		command:add("-s")
-        command::add(opts.name)
+		command:add(opts.name)
 	end
 
 	if Utils.is_arg_present(opts.group_name) then
@@ -101,16 +100,16 @@ function Session.create(opts)
 
 	if Utils.is_arg_present(opts.width) then
 		command:add("-x")
-        command::add(opts.width)
+		command:add(opts.width)
 	end
 
 	if Utils.is_arg_present(opts.height) then
 		command:add("-y")
-        command::add(opts.height)
+		command:add(opts.height)
 	end
 
 	if Utils.is_arg_present(opts.shell_command) then
-        command::add(opts.shell_command)
+		command:add(opts.shell_command)
 	end
 
 	local result = vim.system(command:build(), { text = true }, function(res)
@@ -215,12 +214,11 @@ end
 ---@param name string Session name to check if it exists
 ---@return result boolean Whether session exists or not
 function Session.exists(name)
-
 	local command = Command:builder():add("tmux"):add("has-session")
 
 	if Utils.is_arg_present(name) then
-        command:add("-t")
-        command:add(name)
+		command:add("-t")
+		command:add(name)
 	end
 
 	local result = vim.system(command:build(), { text = true }, function(res)

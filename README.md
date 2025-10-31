@@ -1,5 +1,7 @@
 # Tmux Wrapper for Neovim
 
+![libtmux Logo](./assets/libtmux-logo-nobg.png | width=100)
+
 Develop your own workflow around tmux using Neovim Lua. 
 
 `libtmux.nvim` offers a clean interface to interact with `tmux` inside Neovim.

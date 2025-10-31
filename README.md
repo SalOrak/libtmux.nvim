@@ -1,6 +1,6 @@
 # Tmux Wrapper for Neovim
 
-![libtmux Logo](./assets/libtmux-logo-nobg-1.png)
+<img src="./assets/libtmux-logo-nobg-1.png" alt="libtmux logo" width="100" height="100">
 
 Develop your own workflow around tmux using Neovim Lua. 
 

@@ -22,6 +22,8 @@ function M.is_arg_present(arg)
 				return true
 			elseif getmetatable(arg) == "Direction" then
 				return true
+			else
+				return true
 			end
 		end
 	end

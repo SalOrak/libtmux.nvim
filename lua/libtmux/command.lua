@@ -22,6 +22,13 @@ function CommandBuilder:add(cmd)
 	return self
 end
 
+---@param cmd string Command to append escaped by '
+---@return CommandBuilder
+function CommandBuilder:addEscaped(cmd)
+	table.insert(self.commands, "'" .. cmd .. "'")
+	return self
+end
+
 function CommandBuilder:withShell()
 	local result = {}
 	table.insert(result, self.shell)

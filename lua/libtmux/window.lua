@@ -10,7 +10,6 @@ Window.__index = Window
 ---@param result boolean Whehter the Window was created.
 function Window.new(opts)
 	local command = Command:builder():add("tmux"):add("new-window")
-	command:add("-n"):add(opts.name)
 
 	if Utils.is_arg_present(opts.insert_after) then
 		command:add("-a")
@@ -64,10 +63,12 @@ function Window.new(opts)
 		vim.schedule(function()
 			if obj.code ~= 0 then
 				Logger:error(string.format("While creating window with name %s", opts.name))
+				Logger:error(obj.stderr)
 				Logger:debug(string.format("Creating window command: %s", vim.inspect(command:build())))
 				return false
 			else
 				Logger:info(string.format("Created new window with name %s", opts.name))
+				Logger:debug(string.format("Creating window command: %s", vim.inspect(command:build())))
 				return true
 			end
 		end)
@@ -215,6 +216,7 @@ function Window.send_keys(opts)
 				return false
 			else
 				Logger:info(string.format("Sent keys to window %s", name))
+				Logger:debug(string.format("Command: %s", vim.inspect(command:build())))
 				return true
 			end
 		end)
@@ -228,6 +230,11 @@ end
 function Window.run_shell(opts)
 	if not Utils.is_arg_present(opts.shell_command) then
 		Logger:error("The key `shell_command` must be valid")
+		return false
+	end
+
+	if not Utils.is_arg_present(opts.window_name) then
+		Logger:error("The key `window_name` must be valid")
 		return false
 	end
 
@@ -251,10 +258,9 @@ function Window.run_shell(opts)
 		command:add(opts.delay)
 	end
 
-	if Utils.is_arg_present(opts.window_name) then
-		command:add("-t")
-		command:add(opts.window_name)
-	end
+	-- Append the window
+	command:add("-t")
+	command:add(opts.window_name)
 
 	-- Append the command to the end
 	command:add(opts.shell_command)

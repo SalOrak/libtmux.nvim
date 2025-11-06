@@ -95,24 +95,32 @@ function Tmux:kill_window(opts)
 	return result
 end
 
----@param opts {window_name: string?, keys: [string]}
+---@param opt { list_all: boolean?, format: string?, filter: string?, target_session: string?}
+---@return windows [string] Array of windows names
+function Tmux:list_windows(opts)
+	local result = Window.list(opts)
+	return result
+end
+
+---@param opts {keys: [string], window_name: string?, repeat_count: number?, client: string? }
 function Tmux:send_keys(opts)
 	local result = Window.send_keys(opts)
 	return result
 end
 
 ---@alias Tmux:run_shell(opt)
----@param opts {window_name: string, shell_command: string, start_directory: string?, background: boolean?, view_mode: boolean? }
+---@param opts { shell_command: string, window_name: string?, start_directory: string?, background: boolean?, as_tmux_command: boolean?, delay: number?}
 ---@return result boolean Whether it ran the command.
 function Tmux:run_command(opts)
 	local result = self:run_shell(opts)
 	return result
 end
 
----@param opts {window_name: string, shell_command: string, start_directory: string?, background: boolean?}
+---@param opts { shell_command: string, window_name: string?, start_directory: string?, background: boolean?, as_tmux_command: boolean?, delay: number?}
 ---@return result boolean Whether it ran the command.
 function Tmux:run_shell(opts)
 	local result = Window.run_shell(opts)
+	return result
 end
 
 ------------------------------------------

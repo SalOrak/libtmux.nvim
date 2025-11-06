@@ -135,6 +135,48 @@ function Window.kill(opts)
 	return result
 end
 
+--- TODO: format should be its own class? Or keep it a thin layer?
+--- TODO: filter should be its own class? Or keep it a thin layer?
+---@param opt { list_all: boolean?, format: string?, filter: string?, target_session: string?}
+---@return windows [string] Array of windows names
+function Window.list(opt)
+	local command = Command:builder():add("tmux"):add("list-windows")
+
+	if Utils.is_arg_present(opt.list_all) then
+		command:add("-a")
+	end
+
+	if Utils.is_arg_present(opt.format) then
+		command:add("-F")
+		command:add(opt.format)
+	end
+
+	if Utils.is_arg_present(opt.filter) then
+		command:add("-f")
+		command:add(opt.format)
+	end
+
+	if Utils.is_arg_present(opt.target_session) then
+		command:add("-t")
+		command:add(opt.target_session)
+	end
+
+	local windows = vim.system(command:build(), { text = true }, function(obj)
+		vim.schedule(function()
+			if obj.code ~= 0 then
+				Logger:error(string.format("While listing windows"))
+				Logger:debug(string.format("Command: %s", vim.inspect(command:build())))
+				return {}
+			else
+				Logger:info(string.format("Listed windows"))
+				return vim.split(obj.stdout, "\n")
+			end
+		end)
+	end):wait()
+
+	return windows
+end
+
 ---@param opts {keys: [string], window_name: string?, repeat_count: number?, client: string? }
 function Window.send_keys(opts)
 	if not Utils.is_arg_present(opts.keys) then

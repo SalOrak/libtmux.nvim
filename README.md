@@ -15,13 +15,14 @@ Develop your own workflow around tmux using Neovim Lua.
 |----------------|----------|-----------------------|---------------|
 | switch-client  | Session  | `Tmux:switch_client`  | 80%           |
 | rename-session | Session  | `Tmux:rename_session` | 100%          |
-| new-session    | Session  | `Tmux:new_session`    | 80%              |
-| has-session    | Session  | `Tmux:session_exists` | 100%              |
-| new-window     | Window   | `Tmux:new_window`     |  90%             |
+| new-session    | Session  | `Tmux:new_session`    | 80%           |
+| has-session    | Session  | `Tmux:session_exists` | 100%          |
+| new-window     | Window   | `Tmux:new_window`     | 90%           |
 | select-window  | Window   | `Tmux:select_window`  | 60%           |
 | kill-window    | Window   | `Tmux:kill_window`    | 100%          |
 | send-keys      | Window   | `Tmux:send_keys`      | 70%           |
 | run-shell      | Window   | `Tmux:run_shell`      | 100%          |
+| list-windows   | Window   | `Tmux:list-windows`   | 90%           |
 | break-pane     | Pane     | `Tmux:break_pane`     | 80% (Format)  |
 | capture-pane   | Pane     | `Tmux:capture_pane`   | 100%          |
 | join-pane      | Pane     | `Tmux:join_pane`      | 100%          |
@@ -33,8 +34,6 @@ Develop your own workflow around tmux using Neovim Lua.
 
 
 **Attention**: It is highly recommended to use the `Tmux:` functions instead of accessing the different modules for it as those can change and break more often. 
-
-
 
 ## Contributing
 

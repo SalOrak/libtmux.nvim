@@ -19,7 +19,7 @@ Logger.VerbosityString = {
 	"NONE",
 }
 
-Logger.verbosity = Logger.VerbosityLevel.TRACE
+Logger.verbosity = Logger.VerbosityLevel.INFO
 
 ---@param opts {verbosity: VerbosityLevel?} @return Logger
 function Logger:new(opts)

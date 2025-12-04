@@ -77,6 +77,34 @@ function Window.new(opts)
 	return result
 end
 
+---@param opts {alert: bool?, target_session: string?}
+---@return result boolean Whether the command was successful or not
+function Window.next_window(opts)
+    local command = Command:builder():add("tmux"):add("next-window")
+
+    if Utils.is_arg_present(opts.alert) then
+        command.add("-a")
+    end
+
+    if Utils.is_arg_present(opts.target_session) then
+        command.add("-t")
+        command.add(opts.target_session)
+    end
+
+	local obj = vim.system(command:build(), { text = true }, function() 
+	end):wait()
+
+    if obj.code ~= 0 then
+        Logger:error(string.format("Error selecting next window"))
+        Logger:debug(string.format("Command: %s", vim.inspect(command:build())))
+        return false
+    else
+        Logger:info(string.format("Next window"))
+        return false
+    end
+end
+
+
 ---@param name string Window to select
 ---@return result boolean Whether the window was selected or not
 function Window.select(name)
@@ -106,12 +134,12 @@ function Window.select(name)
 	return result
 end
 
----@param opts {window: string?, except_current: boolean?}
+---@param opts {window: string?, all_but_current: boolean?}
 ---@return result boolean Whether the window was killed or not
 function Window.kill(opts)
 	local command = Command:builder():add("tmux"):add("kill-window")
 
-	if Utils.is_arg_present(opts.except_current) then
+	if Utils.is_arg_present(opts.all_but_current) then
 		command:add("-a")
 	end
 
@@ -136,6 +164,34 @@ function Window.kill(opts)
 	return result
 end
 
+---@return window {id: string?, name: string?, session: string?} Current window
+function Window.get_current()
+	local command = Command:builder()
+
+	command:add("tmux"):add("list-windows")
+	command:add("-F"):add("#{window_id},#{window_name},#{session_name}")
+	command:add("-f"):add("#{==:#{window_active},1}")
+
+	local result = vim.system(command:build(), { text = true }):wait()
+
+	if result.code ~= 0 then
+		Logger:error("Cannot get the current window")
+		Logger:debug(string.format("Command %s", command:build()))
+		return {}
+	else
+		Logger:debug(string.format("Command %s", vim.inspect(command:build())))
+		local window_splitted = vim.split(result.stdout, ",")
+		Logger:debug("Window splitted: " .. vim.inspect(window_splitted))
+
+		Logger:debug("Window splitted at 1: " .. window_splitted[1])
+		return {
+			id = window_splitted[1],
+			name = window_splitted[2],
+			session = window_splitted[3],
+		}
+	end
+end
+
 --- TODO: format should be its own class? Or keep it a thin layer?
 --- TODO: filter should be its own class? Or keep it a thin layer?
 ---@param opt { list_all: boolean?, format: string?, filter: string?, target_session: string?}
@@ -154,7 +210,7 @@ function Window.list(opt)
 
 	if Utils.is_arg_present(opt.filter) then
 		command:add("-f")
-		command:add(opt.format)
+		command:add(opt.filter)
 	end
 
 	if Utils.is_arg_present(opt.target_session) then
@@ -162,20 +218,17 @@ function Window.list(opt)
 		command:add(opt.target_session)
 	end
 
-	local windows = vim.system(command:build(), { text = true }, function(obj)
-		vim.schedule(function()
-			if obj.code ~= 0 then
-				Logger:error(string.format("While listing windows"))
-				Logger:debug(string.format("Command: %s", vim.inspect(command:build())))
-				return {}
-			else
-				Logger:info(string.format("Listed windows"))
-				return vim.split(obj.stdout, "\n")
-			end
-		end)
-	end):wait()
+	local ret = vim.system(command:build(), { text = true }):wait()
 
-	return windows
+	Logger:debug(string.format("Command: %s", vim.inspect(command:build())))
+	if ret.code ~= 0 then
+		Logger:error(string.format("While listing windows"))
+		Logger:debug(string.format("Command: %s", vim.inspect(command:build())))
+		return {}
+	else
+		Logger:info(string.format("Listed windows"))
+		return vim.split(ret.stdout, "\n")
+	end
 end
 
 ---@param opts {keys: [string], window_name: string?, repeat_count: number?, client: string? }

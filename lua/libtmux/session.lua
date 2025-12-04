@@ -35,9 +35,9 @@ end
 ---@param opts {name: string, session: string?}
 ---@return result boolean Wehther the session was renamed or not
 function Session.rename(opts)
-	local session, name = opts.session, opts.trim(target.name)
+	local session, name = opts.session, opts.trim(opts.name)
 
-	local command = self.command:builder():add("tmux"):add("rename-session")
+	local command = Command:builder():add("tmux"):add("rename-session")
 
 	if not Utils.is_arg_present(name) then
 		Logger:error("`name` must not be an empty o nil string")

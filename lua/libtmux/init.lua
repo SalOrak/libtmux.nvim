@@ -81,6 +81,13 @@ function Tmux:new_window(opts)
 	return result
 end
 
+---@param opts {alert: bool?, target_session: string?}
+---@return result boolean Whether the command was successful or not
+function Tmux:next_window(opts)
+	local result = Window.next_window(opts)
+	return result
+end
+
 ---@param name string Window to select
 ---@return result boolean Whether the window was selected or not
 function Tmux:select_window(name)
@@ -88,17 +95,23 @@ function Tmux:select_window(name)
 	return result
 end
 
----@param opts {window: string?, except_current: boolean?}
+---@param opts {window: string?, all_but_current: boolean?}
 ---@return result boolean Whether the window was killed or not
 function Tmux:kill_window(opts)
 	local result = Window.kill(opts)
 	return result
 end
 
----@param opt { list_all: boolean?, format: string?, filter: string?, target_session: string?}
+---@param opts { list_all: boolean?, format: string?, filter: string?, target_session: string?}
 ---@return windows [string] Array of windows names
 function Tmux:list_windows(opts)
 	local result = Window.list(opts)
+	return result
+end
+
+---@return window {id: string?, name: string?, session: string?} Current window
+function Tmux:current_window()
+	local result = Window.get_current()
 	return result
 end
 
@@ -175,4 +188,5 @@ function Tmux:select_pane(opts)
 	local result = Pane.select(opts)
 	return result
 end
+
 return singleton

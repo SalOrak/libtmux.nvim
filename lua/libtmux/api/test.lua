@@ -1,5 +1,5 @@
-local WindowContract = require'libtmux.api_contracts.window'
-local Impl = require'libtmux.api_contracts.implementation_state'
+local WindowContract = require'libtmux.api.window'
+local Impl = require'libtmux.api.implementation_state'
 local ImplStates = Impl.states
 local Command = require'libtmux.command'
 local Logger = require 'libtmux.logger'

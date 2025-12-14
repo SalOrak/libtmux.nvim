@@ -1,4 +1,4 @@
-local Impl = require'libtmux.api_contracts.implementation_state'.states
+local Impl = require'libtmux.api.implementation_state'.states
 
 local M = {
     new_window = {

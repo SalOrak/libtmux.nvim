@@ -15,7 +15,7 @@ local M = {
                 must = false
             },
             {
-                name = "session"
+                name = "session",
                 flag = "t",
                 param = true,
                 must = false
@@ -36,43 +36,43 @@ local M = {
                 must = false
             },
             {
-                name = "default_size"
+                name = "default_size",
                 flag = "d",
                 param = false,
                 must = false
             },
             {
-                name = "start_directory"
+                name = "start_directory",
                 flag = "c",
                 param = true,
                 must = false
             },
             {
-                name = "window_name"
+                name = "window_name",
                 flag = "n",
                 param = true,
                 must = false
             },
             {
-                name = "name"
+                name = "name",
                 flag = "s",
                 param = true,
                 must = false
             },
             {
-                name = "group_name"
+                name = "group_name",
                 flag = "t",
                 param = true,
                 must = false
             },
             {
-                name = "width"
+                name = "width",
                 flag = "x",
                 param = true,
                 must = false
             },
             {
-                name = "height"
+                name = "height",
                 flag = "y",
                 param = true,
                 must = false
@@ -110,13 +110,13 @@ local M = {
                 must = false
             },
             {
-                name = "working_directory"
+                name = "working_directory",
                 flag = "c",
                 param = true,
                 must = false
             },
             {
-                name = "target"
+                name = "target",
                 flag = "t",
                 param = true,
                 must = true 
@@ -137,19 +137,19 @@ local M = {
                 must = false
             },
             {
-                name = "read_only"
+                name = "read_only",
                 flag = "r",
                 param = false,
                 must = false
             },
             {
-                name = "client"
+                name = "client",
                 flag = "c",
                 param = true,
                 must = false
             },
             {
-                name = "name"
+                name = "name",
                 flag = "t",
                 param = true,
                 must = true
@@ -164,13 +164,13 @@ local M = {
         -- Easiest way to order arguments without adding too much data.
         args = {
             {
-                name = "keep_current"
+                name = "keep_current",
                 flag = "a",
                 param = false,
                 must = false
             },
             {
-                name = "clear_alerts"
+                name = "clear_alerts",
                 flag = "C",
                 param = false,
                 must = false

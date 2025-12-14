@@ -1,7 +1,7 @@
 local Impl = require'libtmux.api.implementation_state'.states
 
 local M = {
-    break = {
+    breakk = {
         name = "break-pane",
         description = "TBD",
         state = Impl.PARTIAL,
@@ -13,19 +13,19 @@ local M = {
                 must = false
             },
             {
-                name = "src_pane"
+                name = "src_pane",
                 flag = "s",
                 param = true,
                 must = false
             },
             {
-                name = "window_name"
+                name = "window_name",
                 flag = "n",
                 param = true,
                 must = false
             },
             {
-                name = "format"
+                name = "format",
                 flag = "F",
                 param = true,
                 must = false
@@ -46,55 +46,55 @@ local M = {
                 must = false
             },
             {
-                name = "alternate_screen"
+                name = "alternate_screen",
                 flag = "a",
                 param = false,
                 must = false
             },
             {
-                name = "no_error"
+                name = "no_error",
                 flag = "q",
                 param = false,
                 must = false
             },
             {
-                name = "with_escape_seq"
+                name = "with_escape_seq",
                 flag = "e",
                 param = false,
                 must = false
             },
             {
-                name = "ignore_trailing"
+                name = "ignore_trailing",
                 flag = "T",
                 param = false,
                 must = false
             },
             {
-                name = "preserve_trailing"
+                name = "preserve_trailing",
                 flag = "N",
                 param = false,
                 must = false
             },
             {
-                name = "preserve_join"
+                name = "preserve_join",
                 flag = "J",
                 param = false,
                 must = false
             },
             {
-                name = "buffer_name"
+                name = "buffer_name",
                 flag = "b",
                 param = true,
                 must = false
             },
             {
-                name = "start_line"
+                name = "start_line",
                 flag = "S",
                 param = true,
                 must = false
             },
             {
-                name = "end_line"
+                name = "end_line",
                 flag = "E",
                 param = true,
                 must = false
@@ -142,7 +142,7 @@ local M = {
                 must = false
             },
             {
-                name = "target"
+                name = "target",
                 flag = "t",
                 param = true,
                 must = false
@@ -163,19 +163,19 @@ local M = {
                 must = false
             },
             {
-                name = "enable_input"
+                name = "enable_input",
                 flag = "e",
                 param = false,
                 must = false
             },
             {
-                name = "disable_input"
+                name = "disable_input",
                 flag = "d",
                 param = false,
                 must = false
             },
             {
-                name = "target"
+                name = "target",
                 flag = "t",
                 param = true,
                 must = false
@@ -190,13 +190,13 @@ local M = {
         -- Easiest way to order arguments without adding too much data.
         args = {
             {
-                name = "mouse_resize"
+                name = "mouse_resize",
                 flag = "M",
                 param = false,
                 must = false
             },
             {
-                name = "toggle_zoom"
+                name = "toggle_zoom",
                 flag = "Z",
                 param = false,
                 must = false
@@ -241,13 +241,13 @@ local M = {
         -- Easiest way to order arguments without adding too much data.
         args = {
             {
-                name = "previous"
+                name = "previous",
                 flag = "U",
                 param = false,
                 must = false
             },
             {
-                name = "next"
+                name = "next",
                 flag = "D",
                 param = false,
                 must = false
@@ -286,13 +286,13 @@ local M = {
         -- Easiest way to order arguments without adding too much data.
         args = {
             {
-                name = "keep_zoomed"
+                name = "keep_zoomed",
                 flag = "Z",
                 param = false,
                 must = false
             },
             {
-                name = "direction"
+                name = "direction",
                 flag = nil,
                 param = true,
                 must = false

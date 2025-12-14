@@ -77,6 +77,67 @@ function Window.new(opts)
 	return result
 end
 
+---@param opts {name: string?, target: string?, horizontal: bool?, start_directory: string?, shell_command: string?, size: string?, env: string?, format: Format?, forward_output: bool?}
+---@return result boolean Whehter the Window was splitted
+function Window.split_window(opts)
+	local command = Command:builder():add("tmux"):add("split-window")
+
+	if Utils.is_arg_present(opts.horizontal) then
+		command:add("-h")
+	end
+
+	if Utils.is_arg_present(opts.size) then
+		command:add("-l")
+		command:add(opts.size)
+	end
+
+	if Utils.is_arg_present(opts.env) then
+		command:add("-e")
+		command:add(opts.env)
+	end
+
+
+	if Utils.is_arg_present(opts.start_directory) then
+		command:add("-c"):add(opts.start_directory)
+	end
+
+	if Utils.is_arg_present(opts.target) then
+		command:add("-t")
+		command:add(opts.target)
+	end
+
+	if Utils.is_arg_present(opts.forward_output) then
+		command:add("-I")
+	end
+
+	-- Command to execute before format.
+	if Utils.is_arg_present(opts.shell_command) then
+		command:add(opts.shell_command)
+	end
+
+	if Utils.is_arg_present(opts.format) then
+		command:add("-F")
+		command:add(opts.env)
+	end
+
+	local result = vim.system(command:build(), { text = true }, function(obj)
+		vim.schedule(function()
+			if obj.code ~= 0 then
+				Logger:error(string.format("While splliting window with name %s", opts.name))
+				Logger:error(obj.stderr)
+				Logger:debug(string.format("Split window command: %s", vim.inspect(command:build())))
+				return false
+			else
+				Logger:info(string.format("Splitted new window with name %s", opts.name))
+				Logger:debug(string.format("Splitted window command: %s", vim.inspect(command:build())))
+				return true
+			end
+		end)
+	end):wait()
+
+	return result
+end
+
 ---@param opts {alert: bool?, target_session: string?}
 ---@return result boolean Whether the command was successful or not
 function Window.next_window(opts)

@@ -81,6 +81,16 @@ function Tmux:new_window(opts)
 	return result
 end
 
+---@param opts {name: string?, target: string?, horizontal: bool?,
+---start_directory: string?, shell_command: string?, insert_after: boolean?,
+---insert_before: boolean?, keep_focus: boolean?, kill_instead: boolean?,
+---and_select: boolean?, size: string?, env: string?, format: Format?}
+---@param result boolean Whehter the Window was splitted
+function Tmux:split_window(opts)
+	local result = Window.split_window(opts)
+	return result
+end
+
 ---@param opts {alert: bool?, target_session: string?}
 ---@return result boolean Whether the command was successful or not
 function Tmux:next_window(opts)

@@ -1,4 +1,7 @@
 local WindowContract = require'libtmux.api.window'
+local SessionContract = require'libtmux.api.session'
+local PaneContract = require'libtmux.api.pane'
+
 local Impl = require'libtmux.api.implementation_state'
 local ImplStates = Impl.states
 local Command = require'libtmux.command'
@@ -6,14 +9,46 @@ local Logger = require 'libtmux.logger'
 local Utils = require'libtmux.utils'
 
 local M = {
-    last = nil
+    last = nil,
+    last_contract = nil,
+    ContractSection = {
+        SESSION= 1,
+        WINDOW = 2,
+        PANE = 3
+    }
 }
 
+local ContractSectionsRev = {}
+for k,v in pairs(M.ContractSection) do
+    ContractSectionsRev[v] = k
+end
+
+local function get_contract(contract_section) 
+    if ContractSectionsRev[contract_section] == "SESSION" then
+        return SessionContract
+    elseif ContractSectionsRev[contract_section] == "WINDOW" then
+        return WindowContract
+    elseif ContractSectionsRev[contract_section] == "PANE" then
+        return PaneContract
+    end
+    return nil
+end
+
+
+---@param contract ContractSection Contract section. Options "Window"
 ---@param name string Name of the function to execute
 ---@param uargs table Arguments passed from the user
 ---@param cb function(obj) Passed to `vim.system` on exit. Accepts one param.
-M.execute = function(name, uargs, cb)
-    local fn = WindowContract[name]
+M.execute = function(section, name, uargs, cb)
+    local contract = get_contract(section)
+
+    if contract == nil then
+        Logger:debug(string.format("Section %d is not found", section))
+        return
+    end
+
+    local fn = contract[name]
+
     local command = Command:builder()
 
     if fn == nil then
@@ -62,5 +97,8 @@ M.execute = function(name, uargs, cb)
     end
 
     M.last = command:build()
-    vim.system(command:build(), {text = true}, cb)
+    M.last_contract = contract
+    return vim.system(command:build(), {text = true}, cb)
 end
+
+return M

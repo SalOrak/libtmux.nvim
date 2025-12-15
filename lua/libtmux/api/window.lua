@@ -200,7 +200,7 @@ local M = {
     send_keys = {
         name = "send-keys",
         description = "TBD",
-        state = Impl.PARTIAL,
+        state = Impl.BUGGY,
         -- An ordered list of possible arguments
         -- Easiest way to order arguments without adding too much data.
         args = {
@@ -224,7 +224,7 @@ local M = {
             },
             {
                 name = "keys",
-                flag = "h",
+                flag = nil,
                 param = true,
                 must = true,
                 type = "list" -- TODO: Implement type based arguments

@@ -5,8 +5,6 @@ local M = {
         name = "rename-session",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "name",
@@ -26,8 +24,6 @@ local M = {
         name = "new-session",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "attach",
@@ -84,8 +80,6 @@ local M = {
         name = "has-session",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "name",
@@ -100,8 +94,6 @@ local M = {
         name = "attach-session",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "detach_other",
@@ -127,8 +119,6 @@ local M = {
         name = "switch-client",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "keep_zoomed",
@@ -160,8 +150,6 @@ local M = {
         name = "kill-session",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "keep_current",

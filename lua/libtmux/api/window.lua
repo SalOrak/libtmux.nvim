@@ -5,8 +5,6 @@ local M = {
         name = "new-window",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "insert_after",
@@ -81,8 +79,6 @@ local M = {
         name = "split-window",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "horizontal",
@@ -150,8 +146,6 @@ local M = {
         name = "next-window",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "alert",
@@ -171,8 +165,6 @@ local M = {
         name = "select-window",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
         }
     },
@@ -180,8 +172,6 @@ local M = {
         name = "kill-window",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "window",
@@ -201,8 +191,6 @@ local M = {
         name = "send-keys",
         description = "TBD",
         state = Impl.BUGGY,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "client",
@@ -235,8 +223,6 @@ local M = {
         name = "run-shell",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "background",

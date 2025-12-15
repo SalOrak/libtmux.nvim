@@ -36,8 +36,6 @@ local M = {
         name = "capture",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "stdout",
@@ -132,8 +130,6 @@ local M = {
         name = "kill-pane",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "all_but_current",
@@ -153,8 +149,6 @@ local M = {
         name = "last-pane",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "keep_zoomed",
@@ -186,8 +180,6 @@ local M = {
         name = "resize-pane",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "mouse_resize",
@@ -237,8 +229,6 @@ local M = {
         name = "swap-pane",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "previous",
@@ -282,8 +272,6 @@ local M = {
         name = "select-pane",
         description = "TBD",
         state = Impl.PARTIAL,
-        -- An ordered list of possible arguments
-        -- Easiest way to order arguments without adding too much data.
         args = {
             {
                 name = "keep_zoomed",

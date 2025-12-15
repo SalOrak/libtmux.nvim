@@ -85,7 +85,18 @@ M.execute = function(section, name, uargs, cb)
                     Logger:error(string.format("Expected parameter for argument `%s` when executing tmux function `%s`", arg.name, name))
                     return
                 end
-                command:add(uargs[arg.name])
+                if arg.type == "list" then
+                    if not vim.islist(uargs[arg.name]) then
+                        Logger:error(string.format("Expected parameter type `%s` but found `%s` for argument `%s` on function `%s`", arg.type, type(uargs[arg.name]), arg.name, name))
+                        return
+                    end
+                    for _,v in pairs(uargs[arg.name]) do
+                        command:add(v)
+                    end
+
+                else
+                    command:add(uargs[arg.name])
+                end
             end
         else
             -- Argument not found but required!
@@ -98,6 +109,7 @@ M.execute = function(section, name, uargs, cb)
 
     M.last = command:build()
     M.last_contract = contract
+
     return vim.system(command:build(), {text = true}, cb)
 end
 
